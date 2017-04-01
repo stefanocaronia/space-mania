@@ -17,7 +17,7 @@ public class Damageable : ScriptComponent {
 	public bool DamageFromCollisions = true;
 
 	void Awake() {
-		initScriptComponent();
+		InitScriptComponent();
 
 	}
 
@@ -133,6 +133,6 @@ public class Damageable : ScriptComponent {
 //			}
 //		}
 
-		die();
+		Die();
 	}
 }

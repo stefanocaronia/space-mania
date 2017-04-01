@@ -16,7 +16,7 @@ public class Mover : ScriptComponent {
 
 
 	void Awake() {
-		initScriptComponent();
+		InitScriptComponent();
 		rotationSpeed = Random.Range(-0.6f, 0.6f);
 	}
 

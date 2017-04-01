@@ -42,7 +42,7 @@ public class AmebaController : ScriptComponent, iPoolable {
 	#endregion
 
 	void Awake() {	
-		initScriptComponent();
+		InitScriptComponent();
 	}
 
 	// Use this for initialization

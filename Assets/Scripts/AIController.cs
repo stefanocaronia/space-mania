@@ -69,7 +69,7 @@ public class AIController : ScriptComponent {
 
 	// Use this for initialization
 	void Awake() {		
-		initScriptComponent();
+		InitScriptComponent();
 
 		Template = AIConfiguration.AITemplates[SHIP.Type];
 
@@ -414,7 +414,7 @@ public class AIController : ScriptComponent {
 	}
 
 	GameObject findNearestStation() {
-		Entity nearest = WorldController.Instance.ENTITIES.findNearestByType(EntityType.Station, transform.position);
+		Entity nearest = WorldController.Instance.ENTITIES.FindNearestByType(EntityType.Station, transform.position);
 		return nearest.GameObject;
 	}
 

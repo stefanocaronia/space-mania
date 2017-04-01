@@ -27,7 +27,7 @@ public class Cargo : ScriptComponent {
 	private float jettisonTime;
 
 	void Awake () {
-		initScriptComponent ();
+		InitScriptComponent ();
 		isMultiContent = ContentType == ContentType.Mixed;
 	}
 
@@ -238,7 +238,7 @@ public class Cargo : ScriptComponent {
 	// distrugge l'oggetto se è un item ed è vuoto
 	public bool destroyIfEmpty() {
 		if (isEmpty() && isItem) {
-			die ();
+			Die ();
 			return true;
 		}
 		return false;

@@ -25,7 +25,7 @@ public class InputController : ScriptComponent {
 	public InputMode MODE;
 
 	void Awake() {
-		initScriptComponent();
+		InitScriptComponent();
 		Cursor.visible = false;
 		MODE = InputMode.ANGLE;
 	}

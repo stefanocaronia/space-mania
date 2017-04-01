@@ -35,7 +35,7 @@ public class ScriptComponent : MonoBehaviour
     protected bool isDamageable;
     protected bool hasCargo;
 
-    protected void initScriptComponent()
+    protected void InitScriptComponent()
     {
         AI = GetComponent<AIController>();
         RIGIDBODY = GetComponent<Rigidbody2D>();
@@ -68,20 +68,20 @@ public class ScriptComponent : MonoBehaviour
     }
 
     // destroy gameobject (dopo tot secondi)
-    public void die(float delay)
+    public void Die(float delay)
     {
-        if (toDestroy())
+        if (ToDestroy())
             Destroy(this.gameObject, delay);
     }
 
     // destroy gameobject
-    public void die()
+    public void Die()
     {
-        if (toDestroy())
+        if (ToDestroy())
             Destroy(this.gameObject);
     }
 
-    private bool toDestroy()
+    private bool ToDestroy()
     {
         if (isItem || isAsteroid)
             WorldController.Instance.unregisterEntity(this.gameObject);

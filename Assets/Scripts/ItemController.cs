@@ -10,7 +10,7 @@ public class ItemController : ScriptComponent {
 	public ContentType contentType;
 
 	void Awake() {
-		initScriptComponent();
+		InitScriptComponent();
 		if (hasCargo)
 			contentType = CARGO.ContentType;
 	}

@@ -20,7 +20,7 @@ public class WreckController : ScriptComponent {
 
 	// Use this for initialization
 	void Awake () {
-		initScriptComponent();
+		InitScriptComponent();
 		Sprite.sprite = Utility.getRandomSpriteInMultiple("Sprites/wrecks", 4);
 
 		RegenerateCollider();

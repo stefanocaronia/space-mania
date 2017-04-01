@@ -132,7 +132,7 @@ public class ShipController : ScriptComponent, iPoolable {
 
 	// Use this for initialization
 	void Awake() {
-		initScriptComponent();
+		InitScriptComponent();
 
 		// se esistono più sprite ne scelgo uno a caso
 		if (Versions.Length > 0) {
@@ -428,7 +428,7 @@ public class ShipController : ScriptComponent, iPoolable {
 			bolt.GetComponent<Fire>().shooter = this.gameObject;
 			bolt.GetComponent<Fire>().power = firePower;
 			bolt.GetComponent<Fire>().force = fireForce + RIGIDBODY.velocity.magnitude * 10.0f;
-			bolt.GetComponent<Fire>().shot();
+			bolt.GetComponent<Fire>().Shot();
 			if (shotsound != null)
 				shotsound.PlayOneShot(shotAudio);
 			consumeEnergy(fireConsumption);
@@ -483,7 +483,7 @@ public class ShipController : ScriptComponent, iPoolable {
 
 		// alla fine distruggo l'oggetto
 		//other.gameObject.GetComponent<Cargo>().destroyIfEmpty();
-		other.gameObject.GetComponent<Cargo>().die();
+		other.gameObject.GetComponent<Cargo>().Die();
 		yield return null;
 	}
 
@@ -571,7 +571,7 @@ public class ShipController : ScriptComponent, iPoolable {
 
 				if (GetComponent<AmebaController>() != null) {
 					taken = itemCargo.transferContentToCargo(CARGO);
-					if (taken > 0) itemCargo.die();
+					if (taken > 0) itemCargo.Die();
 					break;
 				}
 				
@@ -583,7 +583,7 @@ public class ShipController : ScriptComponent, iPoolable {
 				taken = itemCargo.unload(itemCargo.Quantity);
 
 				if (taken > 0) {
-					itemCargo.die();
+					itemCargo.Die();
 					if (GetComponent<Radar>() != null) GetComponent<Radar>().Reset();
 				}
 				/*if (itemCargo.isEmpty())
@@ -604,7 +604,7 @@ public class ShipController : ScriptComponent, iPoolable {
 
 				if (GetComponent<AmebaController>() != null) {
 					taken = itemCargo.transferContentToCargo(CARGO);
-					if (taken > 0) itemCargo.die();
+					if (taken > 0) itemCargo.Die();
 					break;
 				}
 
@@ -615,7 +615,7 @@ public class ShipController : ScriptComponent, iPoolable {
 					break;
 				taken = itemCargo.unload(itemCargo.Quantity);
 				if (taken > 0) {
-					itemCargo.die();
+					itemCargo.Die();
 					if (GetComponent<Radar>() != null) GetComponent<Radar>().Reset();
 				}
                 /*if (itemCargo.isEmpty())
@@ -639,7 +639,7 @@ public class ShipController : ScriptComponent, iPoolable {
 				bool loaded = itemCargo.transferContainersToCargo(CARGO);
 
 				if (loaded) {
-					itemCargo.die();
+					itemCargo.Die();
 					if (GetComponent<Radar>() != null) GetComponent<Radar>().Reset();
 				}
 
@@ -657,7 +657,7 @@ public class ShipController : ScriptComponent, iPoolable {
 
 				taken = itemCargo.transferContentToCargo(CARGO);
 				if (taken > 0) {
-					itemCargo.die();
+					itemCargo.Die();
 					if (GetComponent<Radar>() != null) GetComponent<Radar>().Reset();
 				}
 

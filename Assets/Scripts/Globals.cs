@@ -109,19 +109,19 @@ namespace Shushao {
 
 	public class EntityDB : List<Entity> {
 
-		public Entity findByID(int ID) {
+		public Entity FindByID(int ID) {
 			return this.Find(x => x.ID == ID);
 		}
 
-		public void removeByID(int ID) {
+		public void RemoveByID(int ID) {
 			this.Remove(this.Find(x => x.ID == ID));
 		}
 
-		public int countByType(EntityType type) {
+		public int CountByType(EntityType type) {
 			return this.FindAll(x => x.type == type).Count;
 		}
 
-		public Entity findNearestByType(EntityType etype, Vector2 origin) {
+		public Entity FindNearestByType(EntityType etype, Vector2 origin) {
 			List<Entity> elements = this.FindAll(x => x.type == etype);
 			float minDistance = 99999999.0f;
 			Entity nearest = new Entity();

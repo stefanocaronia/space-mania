@@ -75,7 +75,7 @@ public class WorldController : SingletonBehaviour<WorldController> {
 	};
 
 	Dictionary<EntityType, float> entityDensity = new Dictionary<EntityType, float> {
-		{ EntityType.Miner, 0.01f },
+		{ EntityType.Miner, 0.03f },
 		{ EntityType.Transport, 0.002f },
 		{ EntityType.Pirate, 0.003f },
 		{ EntityType.Ameba, 0.002f }
@@ -365,7 +365,7 @@ public class WorldController : SingletonBehaviour<WorldController> {
 	}
 
 	public void unregisterEntity(GameObject go) {
-		ENTITIES.removeByID(go.GetInstanceID());
+		ENTITIES.RemoveByID(go.GetInstanceID());
 	}
 
 }

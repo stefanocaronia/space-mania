@@ -46,7 +46,7 @@ public class AsteroidController : ScriptComponent, iPoolable {
 	#region INIT
 
 	void Awake() {	
-		initScriptComponent();
+		InitScriptComponent();
 
 		if (size > AsteroidSize.NONE)
 			assemble();

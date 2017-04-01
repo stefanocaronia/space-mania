@@ -26,42 +26,46 @@ public class Fire : ScriptComponent, iPoolable {
 
 	#endregion
 
-	void Awake(){		
-		initScriptComponent();
+	void Awake() {		
+		InitScriptComponent();
 	}
 
 	
 	// Update is called once per frame
 	void Update () {
 		if (Time.time - born > lifeSpan) 
-			die();
+			Die();
 	}
-
-
-	public void shot() {
+    
+    public void Shot() {
 		born = Time.time;
 		RIGIDBODY.AddForce(transform.up * force, ForceMode2D.Force);
-	}
+        Debug.Log("SHOT");
+    }
 
-	void OnTriggerEnter2D (Collider2D other) {
-		
-		if (other.gameObject == shooter)
-			return;	
+   private void OnTriggerEnter2D(Collider2D other) {
 
-		if (other.isTrigger)
-			return;
+       Debug.Log("COLLIDE");
+       if (other.gameObject == shooter)
+           return;
 
-		if (other.GetComponent<Damageable>() != null) {
-			Damageable otherController = other.GetComponent<Damageable> ();
-			otherController.TakeDamage(power, this.shooter);
-		}
-		hit();
-	}
+       if (other.isTrigger)
+           return;
 
-	public void hit() {
+       Debug.Log("HIT");
+
+       if (other.GetComponent<Damageable>() != null)
+       {
+           Damageable otherController = other.GetComponent<Damageable>();
+           otherController.TakeDamage(power, this.shooter);
+       }
+       Hit();
+   }
+
+    public void Hit() {
 		if (transform.position != Vector3.zero) {
 			WorldController.Instance.SparksPool.Get(transform.position, transform.rotation);
 		}
-		die();
+		Die();
 	}
 }
