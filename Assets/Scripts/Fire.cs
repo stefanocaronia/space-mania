@@ -43,21 +43,17 @@ public class Fire : ScriptComponent, iPoolable {
         Debug.Log("SHOT");
     }
 
-   private void OnTriggerEnter2D(Collider2D other) {
-
-       Debug.Log("COLLIDE");
+   void OnTriggerEnter2D(Collider2D other) {
+        
        if (other.gameObject == shooter)
            return;
 
        if (other.isTrigger)
            return;
 
-       Debug.Log("HIT");
-
        if (other.GetComponent<Damageable>() != null)
        {
-           Damageable otherController = other.GetComponent<Damageable>();
-           otherController.TakeDamage(power, this.shooter);
+            other.GetComponent<Damageable>().TakeDamage(power, this.shooter);
        }
        Hit();
    }

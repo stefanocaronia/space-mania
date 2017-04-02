@@ -227,7 +227,7 @@ public class AIController : ScriptComponent {
 
 			if (SHIP.Type != EntityType.Ameba && !stationController.Occupied && !stationController.Operating && !stationController.Queued(this.gameObject)) {
 
-				SHIP.requestDock();
+				SHIP.RequestDock();
 
 			}
 
@@ -378,11 +378,11 @@ public class AIController : ScriptComponent {
 	}
 
 	void move() {
-		SHIP.thrustForward( PF.Slow ? 0.2f : 0.4f);
+		SHIP.ThrustForward( PF.Slow ? 0.2f : 0.4f);
 	}
 
 	void stop() {
-		SHIP.thrustForward(0.0f);
+		SHIP.ThrustForward(0.0f);
 	}
 
 	GameObject getSmallestNearestAsteroid () {

@@ -350,25 +350,25 @@ public class ShipController : ScriptComponent, iPoolable {
 
 	#region COMANDI DI MOVIEMTO E AZIONE
 
-	public void requestDock() {
+	public void RequestDock() {
 		if (!NearToStation || station.GetComponent<StationController>().Queued(this.gameObject))
 			return;
 		station.GetComponent<StationController>().OnDockRequest(this.gameObject);
 	}
 
-	public void thrustForward(float inputThrust) {
+	public void ThrustForward(float inputThrust) {
 		thrust = inputThrust;
 	}
 
-	public void thrustHorizontal(float inputThrust) {
+	public void ThrustHorizontal(float inputThrust) {
 		thrustH = inputThrust;
 	}
 
-	public void thrustVertical(float inputThrust) {
+	public void ThrustVertical(float inputThrust) {
 		thrustV = inputThrust;
 	}
 
-	public void setAngle(float inputAngle) {		
+	public void SetAngle(float inputAngle) {		
 		angle = inputAngle;
 		facingPosition = Vector2.zero;
 	}

@@ -56,15 +56,15 @@ public class InputController : ScriptComponent {
 		} else if (MODE == InputMode.ROTDIR) {
 			
 			SHIP.Rotate(-horizontal);
-			SHIP.thrustForward(Mathf.Max(thrustForward, vertical));
+			SHIP.ThrustForward(Mathf.Max(thrustForward, vertical));
 
 		} else if (MODE == InputMode.ANGLE) {
 
 			if (horizontal != 0.0f || vertical != 0.0f) {
 				angle = Mathf.Atan2(vertical, horizontal) * Mathf.Rad2Deg;
 			} 
-			SHIP.setAngle(Utility.joy2objRot(angle));	
-			SHIP.thrustForward(thrustForward);
+			SHIP.SetAngle(Utility.joy2objRot(angle));	
+			SHIP.ThrustForward(thrustForward);
 		}
 
 		SHIP.SetShield(shieldUp > 0.0f);
@@ -76,7 +76,7 @@ public class InputController : ScriptComponent {
 
 		// richiesta di dock in station (pulsante Y)
 		if (action && SHIP.NearToStation) {
-			SHIP.requestDock();
+			SHIP.RequestDock();
 		}
 	}
 

@@ -55,9 +55,10 @@ namespace Shushao {
 			result.transform.rotation = rotation;
 			if (result.GetComponent<PolygonCollider2D>() != null)
 				result.GetComponent<PolygonCollider2D>().enabled = true;
-			if (result.GetComponent<BoxCollider2D>() != null)
+			if (result.GetComponent<BoxCollider2D>() != null) {
 				result.GetComponent<BoxCollider2D>().enabled = true;
-			if (result.GetComponent<CircleCollider2D>() != null)
+            }
+            if (result.GetComponent<CircleCollider2D>() != null)
 				result.GetComponent<CircleCollider2D>().enabled = true;
 			return result;
 		}
