@@ -40,7 +40,6 @@ public class Fire : ScriptComponent, iPoolable {
     public void Shot() {
 		born = Time.time;
 		RIGIDBODY.AddForce(transform.up * force, ForceMode2D.Force);
-        Debug.Log("SHOT");
     }
 
    void OnTriggerEnter2D(Collider2D other) {

@@ -17,8 +17,6 @@ public class Wallet {
 		}
 	}
 
-
-
 	public Wallet(Component owner) {
 		Owner = owner;
 	}

@@ -33,7 +33,7 @@ public class WreckController : ScriptComponent {
 		int numContainers = Random.Range(3, 4);
 		for (int c = 0; c < numContainers; c++) {
 			ContentType pickedType = itemPicker.Pick();
-			CARGO.loadContainer(new CargoContainer(pickedType, Random.Range(6, 30)));
+			CARGO.LoadContainer(new CargoContainer(pickedType, Random.Range(6, 30)));
 		}
 	}
 

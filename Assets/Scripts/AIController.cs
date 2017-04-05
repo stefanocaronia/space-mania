@@ -102,7 +102,7 @@ public class AIController : ScriptComponent {
 
 			while (!PF.atDestination) {
 
-				if (Template.Goal == AIGoal.SELL && CARGO.isFull()) {
+				if (Template.Goal == AIGoal.SELL && CARGO.IsFull()) {
 					Action = AIAction.DOCK;
 					yield break;
 				}
@@ -151,7 +151,7 @@ public class AIController : ScriptComponent {
 		
 		while (action == AIAction.GATHER) {
 
-			if (CARGO.isFull()) {
+			if (CARGO.IsFull()) {
 				Action = AIAction.PATROL;
 				yield break;
 			}
@@ -189,7 +189,7 @@ public class AIController : ScriptComponent {
 
 				PF.unbindTarget();
 
-				if (CARGO.isFull()) {
+				if (CARGO.IsFull()) {
 					RADAR.Enable();
 					Action = AIAction.DOCK;
 					yield break;
@@ -408,7 +408,7 @@ public class AIController : ScriptComponent {
 		if (SHIP.Type != EntityType.Ameba) {
 			if (type == ContentType.Cell && SHIP.energyPercent > 50.0f) return false;
 			else if (type == ContentType.Fuel && SHIP.fuelPercent > 50.0f) return false;
-			else if (type != ContentType.Cell && type != ContentType.Fuel && CARGO.isFull()) return false;
+			else if (type != ContentType.Cell && type != ContentType.Fuel && CARGO.IsFull()) return false;
 		}
 		return true;
 	}

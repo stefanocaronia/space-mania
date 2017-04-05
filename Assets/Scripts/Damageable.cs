@@ -33,7 +33,7 @@ public class Damageable : ScriptComponent {
 		if (isShip && SHIP.Shield) {
 			if (Animator != null)
 				Animator.SetTrigger("isShieldHit");
-			SHIP.consumeEnergy(damage);
+			SHIP.ConsumeEnergy(damage);
 			return;	
 		} else if (Animator != null) {
 			Animator.SetTrigger("isHit");

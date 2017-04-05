@@ -128,9 +128,11 @@ public class WorldController : SingletonBehaviour<WorldController> {
 
 		limits = perimeter.GetComponents<BoxCollider2D>();
 
-		limits[(int)Side.TOP].size = new Vector2(WIDTH * 2, 0.01f); // top
+        float thickness = 1.0f;
+
+        limits[(int)Side.TOP].size = new Vector2(WIDTH * 2, thickness); // top
 		limits[(int)Side.TOP].offset = new Vector2(0.0f, HEIGHT);
-		limits[(int)Side.RIGHT].size = new Vector2(0.01f, HEIGHT * 2); // right
+		limits[(int)Side.RIGHT].size = new Vector2(thickness, HEIGHT * 2); // right
 		limits[(int)Side.RIGHT].offset = new Vector2(WIDTH, 0.0f);
 		limits[(int)Side.BOTTOM].size = limits[(int)Side.TOP].size; // bottom
 		limits[(int)Side.BOTTOM].offset = new Vector2(0.0f, -HEIGHT);
@@ -153,7 +155,7 @@ public class WorldController : SingletonBehaviour<WorldController> {
 	public void generate() {
 
 		if (!GameManager.Instance.Simulation) 
-			generateStarfield();
+			GenerateStarfield();
 		if (!GameManager.Instance.Simulation) 
 			generateCelestials();
 
@@ -202,8 +204,8 @@ public class WorldController : SingletonBehaviour<WorldController> {
 	#region GENERAZIONE SFONDO
 
 	// genera lo sfondo
-	public void generateStarfield() {
-		GameObject first = generateTile(boundaries.x, boundaries.y, 0);
+	public void GenerateStarfield() {
+		GameObject first = GenerateTile(boundaries.x, boundaries.y, 0);
 		Rect starfieldDim = first.GetComponent<SpriteRenderer>().sprite.rect;
 		float pixelXunit = first.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit;
 
@@ -214,13 +216,13 @@ public class WorldController : SingletonBehaviour<WorldController> {
 		for (y = boundaries.y; y <= boundaries.yMax + yStep; y += yStep) {
 			for (x = boundaries.x; x <= boundaries.xMax + xStep; x += xStep) {
 				if (!(x == boundaries.x && y == boundaries.y))
-					generateTile(x, y, ++count);
+					GenerateTile(x, y, ++count);
 			}		
 		}	
 	}
 
 	// genera un tile di starfield alle coordinate indicate
-	GameObject generateTile(float tx, float ty, int count) {
+	GameObject GenerateTile(float tx, float ty, int count) {
 		GameObject tile = new GameObject();
 		tile.AddComponent<SpriteRenderer>();
 		SpriteRenderer sr = tile.GetComponent<SpriteRenderer>();
@@ -302,7 +304,7 @@ public class WorldController : SingletonBehaviour<WorldController> {
 		if (entity == EntityType.Ameba) {
 			AmebaController.create(GetPool(entity), getRandomPosition(true), Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f)), MonsterSize.LITTLE);
 		} else {
-			ShipController.create(GetPool(entity), getRandomPosition(true), Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f)));
+			ShipController.Create(GetPool(entity), getRandomPosition(true), Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f)));
 		}
 	}
 

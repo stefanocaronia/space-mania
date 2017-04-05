@@ -52,7 +52,7 @@ public class AmebaController : ScriptComponent, iPoolable {
 	// Update is called once per frame
 	void Update() {
 
-		if (CARGO.isFull() && Size < MonsterSize.HUGE) {
+		if (CARGO.IsFull() && Size < MonsterSize.HUGE) {
 			Size++;
 		}
 	

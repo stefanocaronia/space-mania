@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Shushao;
 
+[RequireComponent(typeof(ShipController))]
 public class Cargo : ScriptComponent {
 
 	public ContentType ContentType;
@@ -16,7 +17,7 @@ public class Cargo : ScriptComponent {
 	// contenuto dei container + il content
 	public float TotalQuantity {
 		get {
-			countContainersContent();
+			CountContainersContent();
 			return Quantity + ContainersQuantity;
 		}
 	}
@@ -28,7 +29,7 @@ public class Cargo : ScriptComponent {
 
 	void Awake () {
 		InitScriptComponent ();
-		isMultiContent = ContentType == ContentType.Mixed;
+		IsMultiContent = ContentType == ContentType.Mixed;
 	}
 
 	void Start() {
@@ -41,7 +42,7 @@ public class Cargo : ScriptComponent {
 	// restituisce una quantità e la sottrae al contenuto
 	public float unload(float amount) {
 		
-		if (isMultiContent)
+		if (IsMultiContent)
 			return 0.0f;
 		
 		Quantity -= amount;
@@ -56,16 +57,16 @@ public class Cargo : ScriptComponent {
 
 	// restitGameManager.Instance.UIsce tutto il contenuto e lo azzera
 	public float unload() {
-		return isMultiContent ? 0.0f : unload(Quantity);		
+		return IsMultiContent ? 0.0f : unload(Quantity);		
 	}
 
 	// riceve una quantità e la aggiunge al contenuto (restitGameManager.Instance.UIsce quantità aggiunta)
 	public float load(float amount) {
-		if (isMultiContent)
+		if (IsMultiContent)
 			return 0.0f;
 		
 		if (Quantity + amount > Capacity) {
-			generateFloatingCargo (ContentType, Quantity + amount - Capacity);
+			GenerateFloatingCargo (ContentType, Quantity + amount - Capacity);
 			amount = Capacity - Quantity;
 			Quantity = Capacity;
 		} else {
@@ -98,12 +99,12 @@ public class Cargo : ScriptComponent {
 	#endregion
 
 	// carica un container nel multicontent (se si va oltre la capacity, butta fuori l'eccedenza come container)
-	public void loadContainer (CargoContainer container) {
+	public void LoadContainer (CargoContainer container) {
 		if ((TotalQuantity + container.quantity) > Capacity) {
-			addContainer(container);
-			generateFloatingCargo (container.contentType, TotalQuantity + container.quantity - Capacity);
+			AddContainer(container);
+			GenerateFloatingCargo (container.contentType, TotalQuantity + container.quantity - Capacity);
 		} else {
-			addContainer (container);
+			AddContainer (container);
 		}
 	}
 
@@ -124,7 +125,7 @@ public class Cargo : ScriptComponent {
 		if (jettisonTime>Time.time) return;
 		jettisonTime = Time.time + jettisonRate;
 		CargoContainer container = unloadContainer ();
-		generateFloatingCargo (container);
+		GenerateFloatingCargo (container);
 		if (isPlayerShip) 
 			GameManager.Instance.UI.updateCargoFullness();
 		if (isPlayerShip) 
@@ -132,13 +133,13 @@ public class Cargo : ScriptComponent {
 	} 
 
 	// butta fuori un container con una parte del content
-	public void jettison(float amount) {
+	public void Jettison(float amount) {
 		float given = unload(amount);
-		generateFloatingCargo (ContentType, given);
+		GenerateFloatingCargo (ContentType, given);
 	}
 
 	// genera un floating cargo di un tipo e quantità
-	public void generateFloatingCargo(ContentType contentType, float amount) {
+	public void GenerateFloatingCargo(ContentType contentType, float amount) {
 		//shipController.nextItemCatch = Time.time + shipController.itemCatchRate;
 		Quaternion randomRotation = Quaternion.Euler (0.0f, 0.0f, Random.Range (0.0f, 360.0f));
 		Vector3 newPosition = -transform.up * 0.6f;
@@ -155,17 +156,17 @@ public class Cargo : ScriptComponent {
 	}
 
 	// genera un floating cargo da un container
-	public void generateFloatingCargo(CargoContainer container) {
-		generateFloatingCargo (container.contentType, container.quantity);
+	public void GenerateFloatingCargo(CargoContainer container) {
+		GenerateFloatingCargo (container.contentType, container.quantity);
 	}
 
 	// aggiunge un container al contenuto
-	void addContainer(CargoContainer container) {
+	void AddContainer(CargoContainer container) {
 		containers.Add (container);
 	}
 
 	// elimina tutti i container
-	public void emptyContainers() {
+	public void EmptyContainers() {
 		containers.Clear();
 		ContainersQuantity = 0.0f;
 		if (isPlayerShip) {
@@ -175,7 +176,7 @@ public class Cargo : ScriptComponent {
 	}
 
 	// trasferisce tutti i container (se possibile) a destCargo
-	public bool transferContainersToCargo(Cargo destCargo) {
+	public bool TransferContainersToCargo(Cargo destCargo) {
 		float destCargoContent = destCargo.TotalQuantity;
 		int index = 0;
 		bool loaded = false;
@@ -185,7 +186,7 @@ public class Cargo : ScriptComponent {
 				continue;
 			} else {
 				containers.RemoveAt (index);
-				destCargo.loadContainer (container);
+				destCargo.LoadContainer (container);
 				loaded = true;
 			}
 			index++;
@@ -194,12 +195,12 @@ public class Cargo : ScriptComponent {
 	}
 
 	// trasferisce tutto il contenuto a destCargo
-	public float transferContentToCargo(Cargo destCargo) {
-		if (destCargo.isFull()) return 0.0f;
+	public float TransferContentToCargo(Cargo destCargo) {
+		if (destCargo.IsFull()) return 0.0f;
 		float transfer = Mathf.Clamp(Quantity, 0.0f, destCargo.FreeSpace);
 		if (transfer <= 0) return 0.0f;
 		CargoContainer container = unloadContentAsContainer(transfer);
-		destCargo.loadContainer(container);
+		destCargo.LoadContainer(container);
 		return transfer;
 	}
 
@@ -210,15 +211,25 @@ public class Cargo : ScriptComponent {
 		}
 	}
 
-	// verifica se il container è vuoto
-	public bool isEmpty() {
+    public bool IsMultiContent {
+        get {
+            return isMultiContent;
+        }
+
+        set {
+            isMultiContent = value;
+        }
+    }
+
+    // verifica se il container è vuoto
+    public bool IsEmpty() {
 		return (TotalQuantity <= 0);
 	}
 
 	// verifica se il container è pieno
-	public bool isFull() {
-		if (isMultiContent) {
-			countContainersContent();
+	public bool IsFull() {
+		if (IsMultiContent) {
+			CountContainersContent();
 		}
 		return (TotalQuantity >= Capacity);
 	}
@@ -226,8 +237,8 @@ public class Cargo : ScriptComponent {
 
 
 	// conta il contenuto dei container
-	public void countContainersContent() {
-		if (!isMultiContent)
+	public void CountContainersContent() {
+		if (!IsMultiContent)
 			return;
 		ContainersQuantity = 0.0f;
 		foreach (CargoContainer container in containers) {
@@ -236,8 +247,8 @@ public class Cargo : ScriptComponent {
 	}
 
 	// distrugge l'oggetto se è un item ed è vuoto
-	public bool destroyIfEmpty() {
-		if (isEmpty() && isItem) {
+	public bool DestroyIfEmpty() {
+		if (IsEmpty() && isItem) {
 			Die ();
 			return true;
 		}
@@ -248,11 +259,11 @@ public class Cargo : ScriptComponent {
 		int numContainers = Random.Range(minNumber, maxNumber);
 		for (int c = 0; c < numContainers; c++) {
 			ContentType pickedType = itemPicker.Pick();
-			loadContainer(new CargoContainer(pickedType, Random.Range(minContent, maxContent)));
+			LoadContainer(new CargoContainer(pickedType, Random.Range(minContent, maxContent)));
 		}
 	}
 
-	public float sellContainer(CargoContainer container, float price, Wallet wall) {
+	public float SellContainer(CargoContainer container, float price, Wallet wall) {
 		float received = wall.Receive(price);
 		return received;
 	}
@@ -261,12 +272,12 @@ public class Cargo : ScriptComponent {
 	public void OnExplode() {		
 		if (CARGO.containers.Count > 0) {
 			foreach (CargoContainer container in CARGO.containers) {
-				CARGO.generateFloatingCargo(container);
+				CARGO.GenerateFloatingCargo(container);
 			}
 		}
 
 		if (isShip && SHIP.Energy > 0) {
-			generateFloatingCargo(new CargoContainer(ContentType.Cell, SHIP.Energy));
+			GenerateFloatingCargo(new CargoContainer(ContentType.Cell, SHIP.Energy));
 		}	
 	}
 

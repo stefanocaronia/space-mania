@@ -29,9 +29,7 @@ public class ShipController : ScriptComponent, iPoolable {
 	public ParticleSystem reactors;
 
 	#endregion
-
-	[HideInInspector]
-	public float cameraSpeed = 6.0f;
+    
 	[HideInInspector]
 	public float energyPercent = 100.0f;
 	[HideInInspector]
@@ -69,10 +67,7 @@ public class ShipController : ScriptComponent, iPoolable {
 	private bool firePressed;
 	private Vector2 facingDirection = Vector2.zero;
 	private Vector2 facingPosition = Vector2.zero;
-
-	// camera
-	private Vector3 cameraOffset;
-
+    
 	// fire
 	private float nextFire;
 
@@ -162,7 +157,6 @@ public class ShipController : ScriptComponent, iPoolable {
 
 	void Start() {
 		if (isPlayerShip) {
-			cameraOffset = transform.position - Camera.main.transform.position;
 			GameManager.Instance.UI.updateEnergy();
 			GameManager.Instance.UI.updateFuel();
 		}
@@ -201,7 +195,7 @@ public class ShipController : ScriptComponent, iPoolable {
 			firePressed = false;
 			if (shieldsound != null && !shieldsound.isPlaying)
 				shieldsound.Play();
-			consumeEnergy(shieldConsumption * Time.deltaTime);
+			ConsumeEnergy(shieldConsumption * Time.deltaTime);
 		} else {
 			if (shieldsound != null)
 				shieldsound.Stop();
@@ -216,18 +210,18 @@ public class ShipController : ScriptComponent, iPoolable {
 
 		if (!Shield && thrust > 0) {
 			if (Fuel <= 0.0f && Energy >= fuelConsumption) {
-				setEngines(EngineState.EMDRIVE);
-				consumeEnergy(fuelConsumption * thrust * Time.deltaTime);
+				SetEngines(EngineState.EMDRIVE);
+				ConsumeEnergy(fuelConsumption * thrust * Time.deltaTime);
 				thrust /= 8.0f;
 			} else if (Fuel > 0.0f) {
-					setEngines(EngineState.ON);
-					burnFuel(fuelConsumption * thrust * Time.deltaTime);
-				} else {
-					setEngines(EngineState.OFF);
-					thrust = 0.0f;
-				}
+				SetEngines(EngineState.ON);
+				BurnFuel(fuelConsumption * thrust * Time.deltaTime);
+			} else {
+				SetEngines(EngineState.OFF);
+				thrust = 0.0f;
+			}
 		} else {
-			setEngines(EngineState.OFF);
+			SetEngines(EngineState.OFF);
 		}
 
 		if (facingPosition != Vector2.zero) {
@@ -235,47 +229,31 @@ public class ShipController : ScriptComponent, iPoolable {
 			angle = Utility.joy2objRot(angle);
 		}
 
-		if (!Autopilot && GetComponent<InputController>() != null && GetComponent<InputController>().MODE == InputController.InputMode.ROTDIR) {
-			if (Mathf.Abs(rotateAmount) > 0.02f)
-				transform.Rotate(0,0, transform.rotation.z + (rotateAmount * rotationSpeed * Time.deltaTime));
-		} else {
-			transform.rotation = Quaternion.Lerp(transform.rotation, Utility.getRotationFromAngle2D(angle), Time.deltaTime * rotationSpeed);
-		}
+        if (!Autopilot && GetComponent<InputController>() != null && GetComponent<InputController>().MODE == InputController.InputMode.ROTDIR) {
+            if (Mathf.Abs(rotateAmount) > 0.02f)
+                transform.Rotate(0, 0, transform.rotation.z + (rotateAmount * rotationSpeed * Time.deltaTime));
+        } else {
+            transform.rotation = Quaternion.Lerp(transform.rotation, Utility.getRotationFromAngle2D(angle), Time.deltaTime * rotationSpeed);
+        }
+        
+        Recharge(energyRechargeRate * Time.deltaTime);
 
-		if (!FreeCamera && isPlayerShip) {
-			Vector3 newPosition = transform.position - cameraOffset;
-			Camera.main.transform.position = Vector3.Lerp(Camera.main.transform.position, newPosition, Time.deltaTime * cameraSpeed);
+        if (Exploding)
+            return;
 
-			// ROTATE CAMERA
-			//Camera.main.transform.rotation = Quaternion.Lerp(Camera.main.transform.rotation, transform.rotation, Time.deltaTime * cameraSpeed);
-		}
+        if (autopilot || Docked) {
+            return;
+        }
 
-		Recharge(energyRechargeRate * Time.deltaTime);
-	}
+        if (!Shield && thrust > 0) {
+            RIGIDBODY.AddForce(transform.up * thrust * force * Time.deltaTime);
+        }
+    }
 
 	void FixedUpdate() {
-		if (Exploding)
-			return;
 
-		if (autopilot || Docked) {
-			return;
-		}
-
-		if (!Shield && thrust > 0) {
-			RIGIDBODY.AddForce(transform.up * thrust * force * Time.deltaTime);
-		}
-
-		//		if (!shieldActive && Mathf.Abs(thrustH) > 0.8f) {
-		//			Vector2 forceH = (Vector3.right * thrustH * (force / 2)) - (transform.up * thrust * force);
-		//			rb.AddForce (forceH * Time.deltaTime);
-		//		}
-		//
-		//		if (!shieldActive && Mathf.Abs(thrustV) > 0.8f) {
-		//			rb.AddForce ((Vector3.up - transform.up) * thrustV * (force/2) * Time.deltaTime);
-		//		}
-		//
-		// posiziono la camera
-	}
+		   
+    }
 
 	#endregion
 
@@ -292,7 +270,7 @@ public class ShipController : ScriptComponent, iPoolable {
 		return exceed;
 	}
 
-	public void consumeEnergy(float amount) {
+	public void ConsumeEnergy(float amount) {
 		Energy -= amount;
 		Energy = Mathf.Clamp(Energy, 0.0f, energyCapacity);
 		energyPercent = (100 / energyCapacity) * Energy;
@@ -300,7 +278,7 @@ public class ShipController : ScriptComponent, iPoolable {
 			GameManager.Instance.UI.updateEnergy();
 	}
 
-	public void burnFuel(float amount) {
+	public void BurnFuel(float amount) {
 		Fuel -= amount;
 		Fuel = Mathf.Clamp(Fuel, 0.0f, fuelCapacity);
 		fuelPercent = (100 / fuelCapacity) * Fuel;
@@ -319,7 +297,7 @@ public class ShipController : ScriptComponent, iPoolable {
 		return exceed;
 	}
 
-	void setEngines(EngineState state) {
+	void SetEngines(EngineState state) {
 		switch (state) {
 			case EngineState.OFF:
 				//animator.SetBool("isFlying", false);
@@ -431,7 +409,7 @@ public class ShipController : ScriptComponent, iPoolable {
 			bolt.GetComponent<Fire>().Shot();
 			if (shotsound != null)
 				shotsound.PlayOneShot(shotAudio);
-			consumeEnergy(fireConsumption);
+			ConsumeEnergy(fireConsumption);
 			if (isPlayerShip)
 				GameManager.Instance.UI.updateEnergy();
 		}
@@ -461,7 +439,7 @@ public class ShipController : ScriptComponent, iPoolable {
 
 	private IEnumerator generateFloatingCargo(ContentType C, float Q, float delay) {
 		yield return new WaitForSeconds(delay);
-		CARGO.generateFloatingCargo(C, Q);
+		CARGO.GenerateFloatingCargo(C, Q);
 	}
 
 	private IEnumerator attract(GameObject other) {
@@ -570,7 +548,7 @@ public class ShipController : ScriptComponent, iPoolable {
 			case "Fuel": // si tratta di un bidone di fuel
 
 				if (GetComponent<AmebaController>() != null) {
-					taken = itemCargo.transferContentToCargo(CARGO);
+					taken = itemCargo.TransferContentToCargo(CARGO);
 					if (taken > 0) itemCargo.Die();
 					break;
 				}
@@ -603,7 +581,7 @@ public class ShipController : ScriptComponent, iPoolable {
 			case "Cell": // si tratta di una energy cell
 
 				if (GetComponent<AmebaController>() != null) {
-					taken = itemCargo.transferContentToCargo(CARGO);
+					taken = itemCargo.TransferContentToCargo(CARGO);
 					if (taken > 0) itemCargo.Die();
 					break;
 				}
@@ -633,10 +611,10 @@ public class ShipController : ScriptComponent, iPoolable {
 				break;
 
 			case "MultiContent": // si tratta di un item multiContent
-				if (!hasCargo || (hasCargo && CARGO.isFull())) // || Time.time < nextItemCatch
+				if (!hasCargo || (hasCargo && CARGO.IsFull())) // || Time.time < nextItemCatch
                     break;
 
-				bool loaded = itemCargo.transferContainersToCargo(CARGO);
+				bool loaded = itemCargo.TransferContainersToCargo(CARGO);
 
 				if (loaded) {
 					itemCargo.Die();
@@ -652,10 +630,10 @@ public class ShipController : ScriptComponent, iPoolable {
 
 			default: // tutte le altre collisioni con item
 				
-				if (!hasCargo || (hasCargo && CARGO.isFull())) // || Time.time < nextItemCatch
+				if (!hasCargo || (hasCargo && CARGO.IsFull())) // || Time.time < nextItemCatch
                     break;
 
-				taken = itemCargo.transferContentToCargo(CARGO);
+				taken = itemCargo.TransferContentToCargo(CARGO);
 				if (taken > 0) {
 					itemCargo.Die();
 					if (GetComponent<Radar>() != null) GetComponent<Radar>().Reset();
@@ -678,7 +656,7 @@ public class ShipController : ScriptComponent, iPoolable {
 
 	#endregion
 
-	static public GameObject create(EntityType entityType, Vector2 position, Quaternion rotation) {
+	static public GameObject Create(EntityType entityType, Vector2 position, Quaternion rotation) {
 		GameObject obj;
 		obj = Instantiate(Resources.Load("Ships/" + entityType), position, rotation) as GameObject;
 		obj.transform.parent = WorldController.Instance.AIFold.transform;
@@ -687,7 +665,7 @@ public class ShipController : ScriptComponent, iPoolable {
 		return obj;
 	}
 
-	static public GameObject create(Pool sourcePool,  Vector2 position, Quaternion rotation) {
+	static public GameObject Create(Pool sourcePool,  Vector2 position, Quaternion rotation) {
 		GameObject obj;
 		obj = sourcePool.Get(position, rotation);
 		obj.transform.parent = WorldController.Instance.AIFold.transform;
@@ -695,7 +673,7 @@ public class ShipController : ScriptComponent, iPoolable {
 		return obj;
 	}
 
-	public float sellContainer(CargoContainer container, float price) {
+	public float SellContainer(CargoContainer container, float price) {
 		float received = Wallet.Receive(price);
 		return received;
 	}

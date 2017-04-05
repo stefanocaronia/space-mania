@@ -158,7 +158,7 @@ public class StationController : MonoBehaviour {
 			if (_shipController.isPlayerShip) {
 				PlayerManager.Instance.SellContainer(container, prices[container.contentType]);
 			} else {
-				_shipController.sellContainer(container, prices[container.contentType]);
+				_shipController.SellContainer(container, prices[container.contentType]);
 			}
 			yield return new WaitForSeconds(0.2f);
 		}
