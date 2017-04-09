@@ -8,14 +8,11 @@ public class PoolFolder : MonoBehaviour {
 			instance = this;
 		else
 			Destroy(gameObject);
-
-		// instance.name = "POOL";
 	}
 
 	public static void Park(GameObject poolable) {
-		if (poolable == null) 
+		if (poolable == null || instance == null) 
 			return;
-
 		poolable.transform.parent = instance.transform;
 	}
 }

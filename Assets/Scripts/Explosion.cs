@@ -25,9 +25,10 @@ public class Explosion : MonoBehaviour, iPoolable {
 
 	private void destroy() {
 		float delay = 2.0f;
-		if (GetComponent<ParticleSystem>() != null) 
-			delay = GetComponent<ParticleSystem>().duration * 2;
-		Invoke("die", delay);
+		if (GetComponent<ParticleSystem>() != null) {
+            delay = GetComponent<ParticleSystem>().main.duration * 2;
+        }
+        Invoke("die", delay);
 	}
 
 	public void die(){

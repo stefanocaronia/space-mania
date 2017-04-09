@@ -153,7 +153,7 @@ public class StationController : MonoBehaviour {
 		Cargo cargo = Ship.GetComponent<Cargo>();
 
 		while (Occupied && cargo.containers.Count > 0) {
-			CargoContainer container = cargo.unloadContainer();
+			CargoContainer container = cargo.UnloadContainer();
 
 			if (_shipController.isPlayerShip) {
 				PlayerManager.Instance.SellContainer(container, prices[container.contentType]);

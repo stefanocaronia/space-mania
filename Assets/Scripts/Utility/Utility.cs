@@ -149,6 +149,17 @@ namespace Shushao {
 			if (!c.gameObject.GetComponent<SpriteRenderer>().enabled) return false;
 			return true;
 		}
+
+        public static bool AnimatorHasParameter(Animator animator, string param) {
+            bool found = false;
+            foreach (AnimatorControllerParameter pa in animator.parameters) {
+                if (pa.name == param) {
+                    found = true;
+                    break;
+                }
+            }
+            return found;
+        }
 	}
 }
 

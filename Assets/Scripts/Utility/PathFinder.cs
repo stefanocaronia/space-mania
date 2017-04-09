@@ -8,7 +8,8 @@ public class PathFinder {
 	
 	GameObject agent;
 	public List<string> Obstacles;
-	public LayerMask Layers;
+    public List<string> Allowed = new List<string>();
+    public LayerMask Layers;
 
 	const int anglesSensitivity = 8;
 	const int obstaclesAngle = 56;
@@ -52,13 +53,13 @@ public class PathFinder {
 
 	public bool Slow { get; set; }	
 
-	public bool atDestination {
+	public bool AtDestination {
 		get {
-			return (Destination - agent.transform.position).magnitude < 0.3f;
-		}
+			return (Destination == agent.transform.position);
+        }
 	}
-
-	public bool aroundDestination(float radius) {
+    
+    public bool AroundDestination(float radius) {
 		return (Destination - agent.transform.position).magnitude <= radius;
 	}
 
@@ -68,12 +69,12 @@ public class PathFinder {
 		}
 	}
 
-	bool isObstacle(Collider2D collider) {
-		if (collider == null) 
+	bool IsObstacle(Collider2D collider) {
+		if (collider == null || !Utility.ColliderIsInGame(collider)) 
 			return false;
-		return (Obstacles.Contains(collider.tag));
+		return (Obstacles.Contains(collider.tag) && !Allowed.Contains(collider.tag));
 	}
-
+    
 	public Vector3 getBestDirection() {
 		
 		RaycastHit2D hit;
@@ -83,7 +84,6 @@ public class PathFinder {
 		Vector3 dir;
 		List<int> excluded = new List<int>();
 		float size = agent.GetComponent<PolygonCollider2D>().bounds.size.magnitude * 0.6f;
-		//int clamp;
 
 		if (debug) Debug.DrawLine(agent.transform.position, Destination, Color.magenta);
 
@@ -91,14 +91,14 @@ public class PathFinder {
 
 		if (debug) Debug.DrawRay(agent.transform.position + (agent.transform.right * 0.2f), agent.transform.up * minDistanceFromObstacles*2, Color.red);
 		hit = Physics2D.Raycast(agent.transform.position + (agent.transform.right * 0.2f), agent.transform.up, minDistanceFromObstacles *2, Layers);
-		if (hit.collider != null && isObstacle(hit.collider) && !(agent.GetComponent<AIController>().Docking && hit.collider.CompareTag("Station"))) {			
+		if (hit.collider != null && IsObstacle(hit.collider) && !(agent.GetComponent<AIController>().Docking && hit.collider.CompareTag("Station"))) {			
 			Slow = true;
 		}
 
 		if (debug) Debug.DrawRay(agent.transform.position - (agent.transform.right * 0.2f), agent.transform.up * minDistanceFromObstacles *2, Color.red);
 		hit = Physics2D.Raycast(agent.transform.position - (agent.transform.right * 0.2f), agent.transform.up, minDistanceFromObstacles*2, Layers);
 
-		if (hit.collider != null && isObstacle(hit.collider) && !(agent.GetComponent<AIController>().Docking && hit.collider.CompareTag("Station"))) {			
+		if (hit.collider != null && IsObstacle(hit.collider) && !(agent.GetComponent<AIController>().Docking && hit.collider.CompareTag("Station"))) {			
 			Slow = true;
 		}
 
@@ -111,7 +111,7 @@ public class PathFinder {
 			hit = Physics2D.Raycast(agent.transform.position + dir * size, dir, minDistanceFromObstacles, Layers);
 		
 			//if (hit.collider != null && hit.collider.gameObject != agent.gameObject && isObstacle(hit.collider) && !(agent.GetComponent<AIController>().Docking && hit.collider.CompareTag("Station"))) {
-			if (hit.collider != null && hit.collider.gameObject != agent.gameObject && isObstacle(hit.collider)) {
+			if (hit.collider != null && hit.collider.gameObject != agent.gameObject && IsObstacle(hit.collider)) {
 				if (debug) Debug.DrawRay(agent.transform.position + dir * size, Utility.angle2Direction(angle) * minDistanceFromObstacles, Color.red);
 				excluded.Add(angle);
 
@@ -140,38 +140,36 @@ public class PathFinder {
 		return Utility.angle2Direction(result);
 	}
 
-	public float distanceFromDestination {
+	public float DistanceFromDestination {
 		get {
 			return (Destination - agent.transform.position).magnitude;
 		}
 	}
 
-	public Vector3 setRandomDestination() {
+	public Vector3 SetRandomDestination() {
 		float x = Random.Range(-WorldController.Instance.WIDTH, WorldController.Instance.WIDTH);
 		float y = Random.Range(-WorldController.Instance.HEIGHT, WorldController.Instance.HEIGHT);
 		Destination = new Vector3(x, y, 0.0f);
 		return Destination;
 	}
 
-	public void bindTarget (GameObject target) {
+	public void BindTarget (GameObject target) {
 		if (target != null)
 			bindedTarget = target;
 	}
 
-	public void unbindTarget () {
+	public void UnbindTarget () {
 		bindedTarget = null;
 		if (destinationSaved)
-			restoreDestination();
+			RestoreDestination();
 	}
 
-
-
-	public void saveDestination() {
+	public void SaveDestination() {
 		savedDestination = Destination;
 		destinationSaved = true;
 	}
 
-	public void restoreDestination() {
+	public void RestoreDestination() {
 		Destination = savedDestination;
 		savedDestination = Vector3.zero;
 		destinationSaved = false;

@@ -1,16 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using Shushao;
 
 class Radar : MonoBehaviour {
 
 	public List<Collider2D> Detected = new List<Collider2D>();
 
-	public int Capacity = 128;
+	public int Capacity = 32;
 	public float Radius = 4.0f;
-	public float Interval = 1.0f;
+	public float Interval = 4.0f;
 	public LayerMask Layers;
 
 	bool _locked = false;
@@ -41,7 +40,7 @@ class Radar : MonoBehaviour {
 		int num = Physics2D.OverlapCircleNonAlloc(transform.position, Radius, res, Layers);
 		if (num == 0) return;
 
-		for (int i = 0; i < res.Length; i++) {
+		for (int i = 0; i < num; i++) {
 			if (!Active) break;
 			Collider2D c = null;
 			c = res[i];
@@ -57,7 +56,7 @@ class Radar : MonoBehaviour {
 		Detected.Clear();
 	}
 
-	public void scanRepeating() {
+	public void ScanRepeating() {
 		if (!Active) return;
 		InvokeRepeating("Scan", 0.1f, Interval); 
 	}

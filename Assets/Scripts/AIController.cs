@@ -82,35 +82,37 @@ public class AIController : ScriptComponent {
 	}
 
 	void Start() {		
-		RADAR.scanRepeating();
+		//RADAR.ScanRepeating();
 	}
 
 	IEnumerator cPatrol() {
-
-		RADAR.Enable();
+		
 		SHIP.SetFirePressed(false);
 
 		List<Collider2D> results = new List<Collider2D>();
 		
-		while (action == AIAction.PATROL) {	
+		while (Action == AIAction.PATROL) {	
 
 			if (PF.destinationSaved) {
-				PF.restoreDestination(); 
+				PF.RestoreDestination(); 
 			} else {
-				PF.setRandomDestination();
+				PF.SetRandomDestination();
 			}
 
-			while (!PF.atDestination) {
+			while (!PF.AroundDestination(0.5f)) {
 
-				if (Template.Goal == AIGoal.SELL && CARGO.IsFull()) {
+                if (Template.Goal == AIGoal.SELL && CARGO.IsFull()) {
 					Action = AIAction.DOCK;
 					yield break;
 				}
 
-				if (Template.Desires.Length > 0) {
+                RADAR.Enable();
+                RADAR.Scan();
+
+				if (Template.Desires.Length > 0) {                    
 					RADAR.FindItems(Template.Desires, ref results);
 					if (results.Count(isPickable) > 0 ) {
-						PF.saveDestination();
+						PF.SaveDestination();
 						Action = AIAction.GATHER;
 						yield break;
 					}
@@ -118,7 +120,7 @@ public class AIController : ScriptComponent {
 
 				if (Template.Targets.Contains(EntityType.Asteroid)) {
 					if (RADAR.FindAsteroids(ref results) > 0) {
-						PF.saveDestination();
+						PF.SaveDestination();
 						Action = AIAction.MINE;
 						yield break;
 					}
@@ -126,7 +128,7 @@ public class AIController : ScriptComponent {
 
 				if (Template.Targets.Intersect(Tables.ShipTypes).Any()) {					
 					if (RADAR.FindWithTag(Template.TargetsTags, Template.Goal == AIGoal.SELL, ref results) > 0) {
-						PF.saveDestination();
+						PF.SaveDestination();
 						if (results[0] != null) {
 							Target = results[0].gameObject;
 							Action = AIAction.ATTACK;
@@ -139,7 +141,6 @@ public class AIController : ScriptComponent {
 
 				yield return new WaitForSeconds(loopDelay);
 			}
-
 		}
 
 		yield break;
@@ -149,62 +150,58 @@ public class AIController : ScriptComponent {
 
 		List<Collider2D> results = new List<Collider2D>();
 		
-		while (action == AIAction.GATHER) {
+		if (CARGO.IsFull()) {
+			Action = AIAction.DOCK;
+            yield break;
+        }
+
+		if (Template.Desires.Length == 0 ) {
+			Action = AIAction.PATROL;
+            yield break;
+        }
+
+        RADAR.Enable();
+        RADAR.Scan();
+
+        if (RADAR.FindItems(Template.Desires, ref results) == 0) {
+			Action = AIAction.PATROL;
+            yield break;
+        }
+
+		RADAR.Disable();
+
+		foreach (Collider2D item in results) {
+
+            if (Action != AIAction.GATHER) {
+                yield break;
+            }
+				
+			if (!isPickable(item)) {
+                continue;
+            }
+
+            PF.BindTarget(item.gameObject);
+
+			while (!PF.AtDestination) {
+
+				if (item == null || !Utility.ColliderIsInGame(item)) break;
+
+				PF.Destination = item.transform.position;
+				moveTowardsDestination();
+
+                yield return new WaitForSeconds(loopDelay);
+			}
+
+			PF.UnbindTarget();
 
 			if (CARGO.IsFull()) {
-				Action = AIAction.PATROL;
+				Action = AIAction.DOCK;
 				yield break;
 			}
-
-			if (Template.Desires.Length == 0 ) {
-				Action = AIAction.PATROL;
-				yield break;			
-			}
-				
-			if (RADAR.FindItems(Template.Desires, ref results) == 0) {
-				Action = AIAction.PATROL;
-				yield break;
-			}
-
-			RADAR.Disable();
-
-			foreach (Collider2D item in results) {
-				
-				if (!isPickable(item)) continue;
-
-				//PF.Destination = item.transform.position;
-
-				PF.bindTarget(item.gameObject);
-
-				while (!PF.atDestination) {
-
-					if (item == null) break;
-
-					PF.Destination = item.transform.position;
-					moveTowardsDestination();
-
-					yield return new WaitForSeconds(loopDelay);
-
-				}
-
-				PF.unbindTarget();
-
-				if (CARGO.IsFull()) {
-					RADAR.Enable();
-					Action = AIAction.DOCK;
-					yield break;
-				}
-			}
-
-			RADAR.Enable();
-			Action = AIAction.PATROL;
-			yield break;
-		}
-
-		RADAR.Enable();
-		Action = AIAction.PATROL;
-		yield break;
-	}
+        }
+        
+        Action = AIAction.PATROL;
+    }
 
 	IEnumerator cDock() {
 
@@ -214,9 +211,11 @@ public class AIController : ScriptComponent {
 		PF.Destination = nearestStation.transform.position;
 		Docking = true;
 
+        PF.Allowed.Add("Station");
+
 		while (action == AIAction.DOCK) {
 			
-			while (PF.distanceFromDestination > 1.6f) {
+			while (PF.DistanceFromDestination > 1.4f) {
 
 				moveTowardsDestination();
 
@@ -228,21 +227,20 @@ public class AIController : ScriptComponent {
 			if (SHIP.Type != EntityType.Ameba && !stationController.Occupied && !stationController.Operating && !stationController.Queued(this.gameObject)) {
 
 				SHIP.RequestDock();
-
-			}
+                PF.Allowed.Remove("Station");
+            }
 
 			yield return new WaitForSeconds(loopDelay * 6);
 			
 		}
-
-		yield break;
+        
 	}
 
 	IEnumerator cMine() {
 
 		RADAR.Enable();
 
-		GameObject nearestAsteroid;
+        GameObject nearestAsteroid;
 		List<Collider2D> results = new List<Collider2D>();
 		
 		while (action == AIAction.MINE) {
@@ -254,13 +252,13 @@ public class AIController : ScriptComponent {
 				yield break;
 			}
 
-			PF.bindTarget(nearestAsteroid);
+			PF.BindTarget(nearestAsteroid);
 
 			RADAR.Disable();
 
 			while (nearestAsteroid != null && nearestAsteroid.GetComponent<Damageable>().hull > 0) {
 				
-				if (!PF.aroundDestination(3.0f))
+				if (!PF.AroundDestination(3.0f))
 					moveTowardsDestination();
 				else {
 					stop();
@@ -274,14 +272,15 @@ public class AIController : ScriptComponent {
 			}
 
 			RADAR.Enable();
+            RADAR.Scan();
 
-			SHIP.SetFirePressed(false);
-			PF.unbindTarget();
+            SHIP.SetFirePressed(false);
+			PF.UnbindTarget();
 
 			if (Template.Desires.Any()) {
 				RADAR.FindItems(Template.Desires, ref results);
 				if (results.Count(isPickable) > 0) {
-					PF.saveDestination();
+					PF.SaveDestination();
 					Action = AIAction.GATHER;
 					yield break;
 				}
@@ -307,10 +306,10 @@ public class AIController : ScriptComponent {
 				yield break;
 			}
 
-			PF.bindTarget(Target);
+			PF.BindTarget(Target);
 
 			if (PF.Distance > _maxFollowDistance) {
-				PF.unbindTarget();
+				PF.UnbindTarget();
 				Action = AIAction.PATROL;
 				yield break;
 			}
@@ -319,7 +318,7 @@ public class AIController : ScriptComponent {
 								
 				if (Template.Attack == AIAttack.RANGED) {
 					
-					if (!PF.aroundDestination(3.0f))
+					if (!PF.AroundDestination(3.0f))
 						moveTowardsDestination();
 					else {
 						stop();
@@ -331,7 +330,7 @@ public class AIController : ScriptComponent {
 					
 				} else if (Template.Attack == AIAttack.CONTACT) {
 					
-					if (!PF.atDestination)
+					if (!PF.AtDestination)
 						moveTowardsDestination();
 					
 				}
@@ -342,14 +341,15 @@ public class AIController : ScriptComponent {
 			Target = null;
 
 			RADAR.Enable();
+            RADAR.Scan();
 
-			SHIP.SetFirePressed(false);
-			PF.unbindTarget();
+            SHIP.SetFirePressed(false);
+			PF.UnbindTarget();
 
 			if (Template.Goal == AIGoal.SELL || Template.Goal == AIGoal.EAT && RADAR.FindItems(Template.Desires, ref results) > 0) {
 
 				if (results.Count(isPickable) > 0 ) {
-					PF.saveDestination();
+					PF.SaveDestination();
 					Action = AIAction.GATHER;
 					yield break;
 
@@ -389,7 +389,8 @@ public class AIController : ScriptComponent {
 		GameObject result = null;
 		List<Collider2D> results = new List<Collider2D>();
 		AsteroidSize maxAsteroidType = AsteroidSize.NONE;
-		int num = RADAR.FindAsteroids(ref results);
+        RADAR.Scan();
+        int num = RADAR.FindAsteroids(ref results);
 		if (num == 0) return null;
 		foreach (Collider2D c in results) {
 			if (c == null) continue;

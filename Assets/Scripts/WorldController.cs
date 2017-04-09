@@ -77,8 +77,8 @@ public class WorldController : SingletonBehaviour<WorldController> {
 	Dictionary<EntityType, float> entityDensity = new Dictionary<EntityType, float> {
 		{ EntityType.Miner, 0.03f },
 		{ EntityType.Transport, 0.002f },
-		{ EntityType.Pirate, 0.003f },
-		{ EntityType.Ameba, 0.002f }
+		{ EntityType.Pirate, 0.001f },
+		{ EntityType.Ameba, 0.0005f }
 	};
 
 	// database contenente tutte le entity 
@@ -120,13 +120,13 @@ public class WorldController : SingletonBehaviour<WorldController> {
 
 		ENTITIES = new EntityDB();
 
-		// creo i limiti di gioco
-		boundaries = new Rect();
-		boundaries.width = WIDTH * 2;
-		boundaries.height = HEIGHT * 2;
-		boundaries.center = new Vector2(0.0f, 0.0f);
-
-		limits = perimeter.GetComponents<BoxCollider2D>();
+        // creo i limiti di gioco
+        boundaries = new Rect() {
+            width = WIDTH * 2,
+            height = HEIGHT * 2,
+            center = new Vector2(0.0f, 0.0f)
+        };
+        limits = perimeter.GetComponents<BoxCollider2D>();
 
         float thickness = 1.0f;
 
@@ -340,7 +340,7 @@ public class WorldController : SingletonBehaviour<WorldController> {
 		int max = (int)Mathf.Ceil(AREA * itemDensity[type]);
 		int min = (int)Mathf.Ceil(max * 0.8f);
 		for (int i = 0; i < Random.Range(min, max); i++) {
-			ItemController.create(
+			ItemController.Create(
 				getRandomPosition(true), 
 				Quaternion.Euler(0.0f, 0.0f, Random.Range(0.0f, 360.0f)), 
 				type,

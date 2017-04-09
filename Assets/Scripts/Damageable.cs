@@ -31,12 +31,12 @@ public class Damageable : ScriptComponent {
 		// Debug.Log(name + " shooted by " + shooter.name);
 
 		if (isShip && SHIP.Shield) {
-			if (Animator != null)
+			if (Animator != null && Utility.AnimatorHasParameter(Animator, "isShieldHit"))
 				Animator.SetTrigger("isShieldHit");
 			SHIP.ConsumeEnergy(damage);
 			return;	
-		} else if (Animator != null) {
-			Animator.SetTrigger("isHit");
+		} else if (Animator != null && Utility.AnimatorHasParameter(Animator, "isHit")) {
+            Animator.SetTrigger("isHit");
 		}
 
 		damage /= Mathf.Abs(hardiness) + 1;

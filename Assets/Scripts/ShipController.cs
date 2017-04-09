@@ -199,8 +199,10 @@ public class ShipController : ScriptComponent, iPoolable {
 		} else {
 			if (shieldsound != null)
 				shieldsound.Stop();
-			if (Animator != null)
-				Animator.SetBool("isShielded", false);
+
+            if (Animator != null && Utility.AnimatorHasParameter(Animator, "isShielded")) {
+                Animator.SetBool("isShielded", false);
+            }
 		}
 
 		if (!Shield && firePressed && Time.time > nextFire && Energy >= fireConsumption) {	
@@ -331,7 +333,7 @@ public class ShipController : ScriptComponent, iPoolable {
 	public void RequestDock() {
 		if (!NearToStation || station.GetComponent<StationController>().Queued(this.gameObject))
 			return;
-		station.GetComponent<StationController>().OnDockRequest(this.gameObject);
+		station.GetComponent<StationController>().OnDockRequest(gameObject);
 	}
 
 	public void ThrustForward(float inputThrust) {
@@ -442,15 +444,16 @@ public class ShipController : ScriptComponent, iPoolable {
 		CARGO.GenerateFloatingCargo(C, Q);
 	}
 
-	private IEnumerator attract(GameObject other) {
-		// imposto il box collider dell'altro oggetto a trigger
+	private IEnumerator cAttract(GameObject other) {
+		
+        // imposto il box collider dell'altro oggetto a trigger
 		if (other.GetComponent<BoxCollider2D>() != null) {
 			if (!other.GetComponent<BoxCollider2D>().isTrigger)
 				other.GetComponent<BoxCollider2D>().isTrigger = true;
 		} else if (other.GetComponent<PolygonCollider2D>() != null) {
-				if (!other.GetComponent<PolygonCollider2D>().isTrigger)
-					other.GetComponent<PolygonCollider2D>().isTrigger = true;
-			}
+			if (!other.GetComponent<PolygonCollider2D>().isTrigger)
+				other.GetComponent<PolygonCollider2D>().isTrigger = true;
+		}
 
 		// finchè la distanza tra i due oggetti è > 0, sposto l'altro oggetto verso la nave e lo rimpicciolisco
 		while (Vector2.Distance(other.transform.position, transform.position) > 0.05f) {
@@ -489,7 +492,7 @@ public class ShipController : ScriptComponent, iPoolable {
 				break;
 		}
 
-		checkItemCollision(other.gameObject);
+		CheckItemCollision(other.gameObject);
 	}
 
 	// il trigger collide contro qualcosa
@@ -501,7 +504,7 @@ public class ShipController : ScriptComponent, iPoolable {
 			return;
 		}
 
-		checkItemCollision(other.gameObject);
+		CheckItemCollision(other.gameObject);
 	}
 
 	// il trigger contiene qualcosa
@@ -518,7 +521,7 @@ public class ShipController : ScriptComponent, iPoolable {
 			return;
 		}
 
-		checkItemCollision(other.gameObject);
+		CheckItemCollision(other.gameObject);
 	}
 
 	void OnTriggerExit2D(Collider2D other) {
@@ -532,7 +535,7 @@ public class ShipController : ScriptComponent, iPoolable {
 	}
 
 	// controllo le collisioni con item (fuel, cell, minerali etc)
-	void checkItemCollision(GameObject item) {
+	void CheckItemCollision(GameObject item) {
 		if (item.GetComponent<ItemController>() == null)
 			return;
 
@@ -558,15 +561,16 @@ public class ShipController : ScriptComponent, iPoolable {
 				
 				if (itemCargo.ContentType != ContentType.Fuel)
 					break;
-				taken = itemCargo.unload(itemCargo.Quantity);
+
+				taken = itemCargo.Unload(itemCargo.Quantity);
 
 				if (taken > 0) {
 					itemCargo.Die();
 					if (GetComponent<Radar>() != null) GetComponent<Radar>().Reset();
 				}
-				/*if (itemCargo.isEmpty())
-                {
-                    StartCoroutine(attract(item));
+
+                /*if (itemCargo.IsEmpty()){
+                    StartCoroutine(cAttract(item));
                 }*/
 
 				float surplusFuel = Refuel(taken);
@@ -591,17 +595,17 @@ public class ShipController : ScriptComponent, iPoolable {
 
 				if (itemCargo.ContentType != ContentType.Cell)
 					break;
-				taken = itemCargo.unload(itemCargo.Quantity);
+				taken = itemCargo.Unload(itemCargo.Quantity);
 				if (taken > 0) {
 					itemCargo.Die();
 					if (GetComponent<Radar>() != null) GetComponent<Radar>().Reset();
 				}
-                /*if (itemCargo.isEmpty())
-                {
-                    StartCoroutine(attract(item));
+
+                /*if (itemCargo.IsEmpty()){
+                     StartCoroutine(cAttract(item));
                 }*/
 
-				float surplusEnergy = Recharge(taken);
+                float surplusEnergy = Recharge(taken);
 				if (surplusEnergy > 0.0f && jettisonExceedingCargo) {					
 					StartCoroutine(generateFloatingCargo(ContentType.Cell, surplusEnergy, 0.6f)); // butto fuori il contenuto eccedente
 				}
@@ -639,11 +643,11 @@ public class ShipController : ScriptComponent, iPoolable {
 					if (GetComponent<Radar>() != null) GetComponent<Radar>().Reset();
 				}
 
-//                if (itemCargo.isEmpty()) {
-//                    StartCoroutine(attract(item));
-//                }
+                /*if (itemCargo.IsEmpty()){
+                     StartCoroutine(cAttract(item));
+                }*/
 
-				if (isPlayerShip) {
+                if (isPlayerShip) {
 					GameManager.Instance.UI.updateCargoPanel();
 					GameManager.Instance.UI.updateCargoFullness();
 				}

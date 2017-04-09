@@ -27,7 +27,24 @@ public class Cargo : ScriptComponent {
 	private const float jettisonRate = 0.2f;
 	private float jettisonTime;
 
-	void Awake () {
+    public float FreeSpace {
+        get {
+            return Capacity - TotalQuantity;
+        }
+    }
+
+    public bool IsMultiContent {
+        get {
+            return isMultiContent;
+        }
+
+        set {
+            isMultiContent = value;
+        }
+    }
+
+
+    void Awake () {
 		InitScriptComponent ();
 		IsMultiContent = ContentType == ContentType.Mixed;
 	}
@@ -40,7 +57,7 @@ public class Cargo : ScriptComponent {
 	#region Single Content Methods
 
 	// restituisce una quantità e la sottrae al contenuto
-	public float unload(float amount) {
+	public float Unload(float amount) {
 		
 		if (IsMultiContent)
 			return 0.0f;
@@ -55,13 +72,13 @@ public class Cargo : ScriptComponent {
 		return amount;
 	}
 
-	// restitGameManager.Instance.UIsce tutto il contenuto e lo azzera
-	public float unload() {
-		return IsMultiContent ? 0.0f : unload(Quantity);		
+	// restituisce tutto il contenuto e lo azzera
+	public float Unload() {
+		return IsMultiContent ? 0.0f : Unload(Quantity);		
 	}
 
-	// riceve una quantità e la aggiunge al contenuto (restitGameManager.Instance.UIsce quantità aggiunta)
-	public float load(float amount) {
+	// riceve una quantità e la aggiunge al contenuto (restituisce quantità aggiunta)
+	public float Load(float amount) {
 		if (IsMultiContent)
 			return 0.0f;
 		
@@ -77,22 +94,17 @@ public class Cargo : ScriptComponent {
 			GameManager.Instance.UI.updateCargoFullness();
 		
 		return amount;
-	}
-
-	// TEST
-	void OnMouseDown(){
-		//jettison (2);
-	}
+	}    
 
 	// restituisce un container con la quantità specificata
-	public CargoContainer unloadContentAsContainer(float amount) {
-		float given = unload(amount);
+	public CargoContainer UnloadContentAsContainer(float amount) {
+		float given = Unload(amount);
 		return new CargoContainer (ContentType, given);
 	}
 
 	// restituisce un container con tutto il contenuto
-	public CargoContainer unloadContentAsContainer() {
-		float given = unload();
+	public CargoContainer UnloadContentAsContainer() {
+		float given = Unload();
 		return new CargoContainer(ContentType, given);
 	}
 
@@ -108,8 +120,8 @@ public class Cargo : ScriptComponent {
 		}
 	}
 
-	// scarica e restitGameManager.Instance.UIsce l'ultimo container caricato
-	public CargoContainer unloadContainer() {
+	// scarica e restituisce l'ultimo container caricato
+	public CargoContainer UnloadContainer() {
 		CargoContainer container = containers[containers.Count - 1];
 		containers.RemoveAt (containers.Count - 1);
 
@@ -124,7 +136,7 @@ public class Cargo : ScriptComponent {
 		if (containers.Count == 0 ) return;
 		if (jettisonTime>Time.time) return;
 		jettisonTime = Time.time + jettisonRate;
-		CargoContainer container = unloadContainer ();
+		CargoContainer container = UnloadContainer ();
 		GenerateFloatingCargo (container);
 		if (isPlayerShip) 
 			GameManager.Instance.UI.updateCargoFullness();
@@ -134,7 +146,7 @@ public class Cargo : ScriptComponent {
 
 	// butta fuori un container con una parte del content
 	public void Jettison(float amount) {
-		float given = unload(amount);
+		float given = Unload(amount);
 		GenerateFloatingCargo (ContentType, given);
 	}
 
@@ -199,27 +211,10 @@ public class Cargo : ScriptComponent {
 		if (destCargo.IsFull()) return 0.0f;
 		float transfer = Mathf.Clamp(Quantity, 0.0f, destCargo.FreeSpace);
 		if (transfer <= 0) return 0.0f;
-		CargoContainer container = unloadContentAsContainer(transfer);
+		CargoContainer container = UnloadContentAsContainer(transfer);
 		destCargo.LoadContainer(container);
 		return transfer;
 	}
-
-
-	public float FreeSpace {
-		get {
-			return Capacity - TotalQuantity;
-		}
-	}
-
-    public bool IsMultiContent {
-        get {
-            return isMultiContent;
-        }
-
-        set {
-            isMultiContent = value;
-        }
-    }
 
     // verifica se il container è vuoto
     public bool IsEmpty() {
@@ -249,7 +244,7 @@ public class Cargo : ScriptComponent {
 	// distrugge l'oggetto se è un item ed è vuoto
 	public bool DestroyIfEmpty() {
 		if (IsEmpty() && isItem) {
-			Die ();
+			Die();
 			return true;
 		}
 		return false;
