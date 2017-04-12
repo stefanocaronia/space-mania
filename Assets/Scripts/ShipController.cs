@@ -376,7 +376,15 @@ public class ShipController : ScriptComponent, iPoolable {
 		//StartCoroutine(faceDirection(facingDirection));
 	}
 
-	public void SetDirection(Vector2 dir) {
+    public void LookAway(Vector3 pos) {
+        facingDirection = -((Vector2)pos - (Vector2)transform.position).normalized;
+        facingPosition = facingDirection;
+
+        //StartCoroutine(faceDirection(facingDirection));
+    }
+
+
+    public void SetDirection(Vector2 dir) {
 		facingDirection = dir;
 	}
 

@@ -68,21 +68,18 @@ public class ScriptComponent : MonoBehaviour
     }
 
     // destroy gameobject (dopo tot secondi)
-    public void Die(float delay)
-    {
+    public void Die(float delay) {
         if (ToDestroy())
             Destroy(this.gameObject, delay);
     }
 
     // destroy gameobject
-    public void Die()
-    {
+    public void Die()  {
         if (ToDestroy())
             Destroy(this.gameObject);
     }
 
-    private bool ToDestroy()
-    {
+    private bool ToDestroy()  {
         if (isItem || isAsteroid)
             WorldController.Instance.unregisterEntity(this.gameObject);
 
@@ -95,9 +92,7 @@ public class ScriptComponent : MonoBehaviour
 			Pool pool = WorldController.Instance.GetPool(SHIP.Type);
 			if (pool != null) pool.Put(this.gameObject);
 			return false;					
-		}
-
-        
+		}        
 
         if (GetComponent<Fire>() != null)  {
             GetComponent<Fire>().Source.Put(this.gameObject);
@@ -106,5 +101,4 @@ public class ScriptComponent : MonoBehaviour
 
         return true;
     }
-
 }

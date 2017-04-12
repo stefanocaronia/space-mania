@@ -114,6 +114,8 @@ public class StationController : MonoBehaviour {
 			Ship.GetComponent<AIController>().Action = AIAction.PATROL;
 		}
 
+        _shipController.LookAway(transform.position);
+
 		Wallet = null;
 		Ship = null;
 		_shipController = null;

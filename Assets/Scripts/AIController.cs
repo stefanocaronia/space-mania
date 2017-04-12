@@ -79,11 +79,12 @@ public class AIController : ScriptComponent {
 		if (Template.Avoid != null && Template.Avoid.Length > 0) {
 			PF.Obstacles = Template.Avoid.ToList();
 		}
-	}
+    }
 
-	void Start() {		
-		//RADAR.ScanRepeating();
-	}
+	void Start() {
+        SHIP.SetFirePressed(false);
+        //RADAR.ScanRepeating();
+    }
 
 	IEnumerator cPatrol() {
 		
@@ -148,7 +149,9 @@ public class AIController : ScriptComponent {
 
 	IEnumerator cGather() {
 
-		List<Collider2D> results = new List<Collider2D>();
+        SHIP.SetFirePressed(false);
+
+        List<Collider2D> results = new List<Collider2D>();
 		
 		if (CARGO.IsFull()) {
 			Action = AIAction.DOCK;
@@ -175,8 +178,13 @@ public class AIController : ScriptComponent {
             if (Action != AIAction.GATHER) {
                 yield break;
             }
-				
-			if (!isPickable(item)) {
+
+            if (CARGO.IsFull()) {
+                Action = AIAction.DOCK;
+                yield break;
+            }
+
+            if (!isPickable(item)) {
                 continue;
             }
 
@@ -188,6 +196,11 @@ public class AIController : ScriptComponent {
 
 				PF.Destination = item.transform.position;
 				moveTowardsDestination();
+
+                if (CARGO.IsFull()) {
+                    Action = AIAction.DOCK;
+                    yield break;
+                }
 
                 yield return new WaitForSeconds(loopDelay);
 			}
@@ -205,7 +218,9 @@ public class AIController : ScriptComponent {
 
 	IEnumerator cDock() {
 
-		GameObject nearestStation = findNearestStation();
+        SHIP.SetFirePressed(false);
+
+        GameObject nearestStation = findNearestStation();
 		StationController stationController = nearestStation.GetComponent<StationController>();
 
 		PF.Destination = nearestStation.transform.position;
@@ -238,7 +253,9 @@ public class AIController : ScriptComponent {
 
 	IEnumerator cMine() {
 
-		RADAR.Enable();
+        SHIP.SetFirePressed(false);
+
+        RADAR.Enable();
 
         GameObject nearestAsteroid;
 		List<Collider2D> results = new List<Collider2D>();
@@ -252,13 +269,23 @@ public class AIController : ScriptComponent {
 				yield break;
 			}
 
-			PF.BindTarget(nearestAsteroid);
+            if (CARGO.IsFull()) {
+                Action = AIAction.DOCK;
+                yield break;
+            }
+
+            PF.BindTarget(nearestAsteroid);
 
 			RADAR.Disable();
 
 			while (nearestAsteroid != null && nearestAsteroid.GetComponent<Damageable>().hull > 0) {
-				
-				if (!PF.AroundDestination(3.0f))
+
+                if (CARGO.IsFull()) {
+                    Action = AIAction.DOCK;
+                    yield break;
+                }
+
+                if (!PF.AroundDestination(3.0f))
 					moveTowardsDestination();
 				else {
 					stop();
@@ -295,7 +322,9 @@ public class AIController : ScriptComponent {
 
 	IEnumerator cAttack() {
 
-		List<Collider2D> results = new List<Collider2D>();
+        SHIP.SetFirePressed(false);
+
+        List<Collider2D> results = new List<Collider2D>();
 
 		RADAR.Disable();
 
