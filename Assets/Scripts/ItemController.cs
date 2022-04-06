@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 using Shushao;
 
 public class ItemController : ScriptComponent {

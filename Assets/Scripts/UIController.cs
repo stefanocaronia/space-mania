@@ -22,13 +22,13 @@ public class UIController : MonoBehaviour {
 		playerShipController = playerShip.GetComponent<ShipController>();
 		playerShipCargo = playerShip.GetComponent<Cargo>();
 
-		fuelText = transform.FindChild("Fuel").GetComponent<Text>();
-		energyText = transform.FindChild("Energy").GetComponent<Text>();
-		integrityText = transform.FindChild("Integrity").GetComponent<Text>();
-		cargoPanel = transform.FindChild("Cargo").gameObject;
-		cargoFullness = transform.FindChild("Fullness").gameObject.GetComponent<Text>();
-		creditsText = transform.FindChild("Credits").gameObject.GetComponent<Text>();
-		message = transform.FindChild("Message").gameObject.GetComponent<Text>();
+		fuelText = transform.Find("Fuel").GetComponent<Text>();
+		energyText = transform.Find("Energy").GetComponent<Text>();
+		integrityText = transform.Find("Integrity").GetComponent<Text>();
+		cargoPanel = transform.Find("Cargo").gameObject;
+		cargoFullness = transform.Find("Fullness").gameObject.GetComponent<Text>();
+		creditsText = transform.Find("Credits").gameObject.GetComponent<Text>();
+		message = transform.Find("Message").gameObject.GetComponent<Text>();
 	}
 
 	void Start() {

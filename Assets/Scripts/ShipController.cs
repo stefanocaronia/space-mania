@@ -150,7 +150,7 @@ public class ShipController : ScriptComponent, iPoolable {
 		if (Sounds.Length > 2)
 			shieldsound = Sounds[2];
 
-		if (transform.FindChild("Reactors") != null) reactors = transform.FindChild("Reactors").GetComponent<ParticleSystem>();
+		if (transform.Find("Reactors") != null) reactors = transform.Find("Reactors").GetComponent<ParticleSystem>();
 
 		firePool = new Pool(fire, 20, 10);
 	}

@@ -1,12 +1,8 @@
-﻿using UnityEngine;
-using System;
-
-
-namespace Shushao {
+﻿namespace Shushao {
 	
 	public class Singleton<T> where T : new() {
 
-		static readonly T instance = new T();
+		private static readonly T instance = new T();
 
 		public static T Instance {
 			get {

@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using Shushao;
-using System.Collections.Generic;
 
 public class PlayerManager : SingletonBehaviour<PlayerManager> {
 
@@ -14,8 +13,6 @@ public class PlayerManager : SingletonBehaviour<PlayerManager> {
 	[HideInInspector]
 	public ShipController ShipController;
 
-
-	// Use this for initialization
 	void Awake () {
 		Ship = GameObject.FindWithTag("Player");
 		ShipController = Ship.GetComponent<ShipController>();	

@@ -57,7 +57,6 @@ namespace Shushao {
 		TOPLEFT
 	}
 
-
 	public enum EngineState {
 		OFF,
 		EMDRIVE,

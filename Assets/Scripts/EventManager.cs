@@ -6,7 +6,7 @@ public class EventManager : SingletonBehaviour<EventManager> {
 
 	private Dictionary<string, List<Component>> Listeners = new Dictionary<string, List<Component>>();
 
-	public void AddListener (string eventName, Component sender) {
+	public void AddListener(string eventName, Component sender) {
 		
 		if (!Listeners.ContainsKey(eventName))
 			Listeners.Add(eventName, new List<Component>());

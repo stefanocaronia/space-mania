@@ -19,6 +19,11 @@ public class Damageable : ScriptComponent {
 	void Awake() {
 		InitScriptComponent();
 
+		BoxCollider2D boxc;
+
+		boxc = GetComponent<BoxCollider2D>();
+		
+
 	}
 
 	void Start() {
