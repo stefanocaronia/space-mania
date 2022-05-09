@@ -68,10 +68,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -110,6 +112,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -472,9 +475,25 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      ship-shields_4: 21300008
+      ship-shields_6: 21300012
+      ship-shields_14: 21300028
+      ship-shields_7: 21300014
+      ship-shields_9: 21300018
+      ship-shields_10: 21300020
+      ship-shields_1: 21300002
+      ship-shields_2: 21300004
+      ship-shields_3: 21300006
+      ship-shields_12: 21300024
+      ship-shields_11: 21300022
+      ship-shields_8: 21300016
+      ship-shields_5: 21300010
+      ship-shields_15: 21300030
+      ship-shields_0: 21300000
+      ship-shields_13: 21300026
   spritePackingTag: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

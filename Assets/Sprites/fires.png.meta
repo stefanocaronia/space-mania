@@ -212,10 +212,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -254,6 +256,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -1624,9 +1627,73 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      fires_16: 21300032
+      fires_24: 21300048
+      fires_60: 21300120
+      fires_10: 21300020
+      fires_58: 21300116
+      fires_49: 21300098
+      fires_30: 21300060
+      fires_40: 21300080
+      fires_48: 21300096
+      fires_3: 21300006
+      fires_20: 21300040
+      fires_17: 21300034
+      fires_29: 21300058
+      fires_13: 21300026
+      fires_42: 21300084
+      fires_45: 21300090
+      fires_7: 21300014
+      fires_36: 21300072
+      fires_46: 21300092
+      fires_32: 21300064
+      fires_6: 21300012
+      fires_8: 21300016
+      fires_52: 21300104
+      fires_0: 21300000
+      fires_62: 21300124
+      fires_44: 21300088
+      fires_21: 21300042
+      fires_51: 21300102
+      fires_19: 21300038
+      fires_23: 21300046
+      fires_43: 21300086
+      fires_57: 21300114
+      fires_12: 21300024
+      fires_14: 21300028
+      fires_1: 21300002
+      fires_31: 21300062
+      fires_50: 21300100
+      fires_54: 21300108
+      fires_37: 21300074
+      fires_38: 21300076
+      fires_56: 21300112
+      fires_61: 21300122
+      fires_55: 21300110
+      fires_27: 21300054
+      fires_47: 21300094
+      fires_11: 21300022
+      fires_35: 21300070
+      fires_15: 21300030
+      fires_9: 21300018
+      fires_59: 21300118
+      fires_63: 21300126
+      fires_4: 21300008
+      fires_26: 21300052
+      fires_53: 21300106
+      fires_39: 21300078
+      fires_2: 21300004
+      fires_34: 21300068
+      fires_28: 21300056
+      fires_18: 21300036
+      fires_22: 21300044
+      fires_33: 21300066
+      fires_41: 21300082
+      fires_5: 21300010
+      fires_25: 21300050
   spritePackingTag: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 

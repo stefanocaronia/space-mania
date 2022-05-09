@@ -212,10 +212,12 @@ TextureImporter:
     externalNormalMap: 0
     heightScale: 0.25
     normalMapFilter: 0
+    flipGreenChannel: 0
   isReadable: 0
   streamingMipmaps: 0
   streamingMipmapsPriority: 0
   vTOnly: 0
+  ignoreMasterTextureLimit: 0
   grayScaleToAlpha: 0
   generateCubemap: 6
   cubemapConvolution: 0
@@ -254,6 +256,7 @@ TextureImporter:
   textureFormatSet: 0
   ignorePngGamma: 0
   applyGammaDecoding: 1
+  swizzle: 50462976
   platformSettings:
   - serializedVersion: 3
     buildTarget: DefaultTexturePlatform
@@ -1624,9 +1627,73 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
+    nameFileIdTable:
+      ship-sprite-harlock_9: 21300018
+      ship-sprite-harlock_23: 21300046
+      ship-sprite-harlock_24: 21300048
+      ship-sprite-harlock_37: 21300074
+      ship-sprite-harlock_22: 21300044
+      ship-sprite-harlock_43: 21300086
+      ship-sprite-harlock_30: 21300060
+      ship-sprite-harlock_35: 21300070
+      ship-sprite-harlock_3: 21300006
+      ship-sprite-harlock_47: 21300094
+      ship-sprite-harlock_25: 21300050
+      ship-sprite-harlock_7: 21300014
+      ship-sprite-harlock_28: 21300056
+      ship-sprite-harlock_14: 21300028
+      ship-sprite-harlock_44: 21300088
+      ship-sprite-harlock_13: 21300026
+      ship-sprite-harlock_2: 21300004
+      ship-sprite-harlock_45: 21300090
+      ship-sprite-harlock_38: 21300076
+      ship-sprite-harlock_17: 21300034
+      ship-sprite-harlock_39: 21300078
+      ship-sprite-harlock_62: 21300124
+      ship-sprite-harlock_11: 21300022
+      ship-sprite-harlock_10: 21300020
+      ship-sprite-harlock_27: 21300054
+      ship-sprite-harlock_29: 21300058
+      ship-sprite-harlock_57: 21300114
+      ship-sprite-harlock_36: 21300072
+      ship-sprite-harlock_59: 21300118
+      ship-sprite-harlock_61: 21300122
+      ship-sprite-harlock_12: 21300024
+      ship-sprite-harlock_41: 21300082
+      ship-sprite-harlock_32: 21300064
+      ship-sprite-harlock_63: 21300126
+      ship-sprite-harlock_60: 21300120
+      ship-sprite-harlock_31: 21300062
+      ship-sprite-harlock_26: 21300052
+      ship-sprite-harlock_18: 21300036
+      ship-sprite-harlock_50: 21300100
+      ship-sprite-harlock_40: 21300080
+      ship-sprite-harlock_4: 21300008
+      ship-sprite-harlock_0: 21300000
+      ship-sprite-harlock_19: 21300038
+      ship-sprite-harlock_5: 21300010
+      ship-sprite-harlock_56: 21300112
+      ship-sprite-harlock_1: 21300002
+      ship-sprite-harlock_52: 21300104
+      ship-sprite-harlock_58: 21300116
+      ship-sprite-harlock_21: 21300042
+      ship-sprite-harlock_34: 21300068
+      ship-sprite-harlock_42: 21300084
+      ship-sprite-harlock_20: 21300040
+      ship-sprite-harlock_16: 21300032
+      ship-sprite-harlock_15: 21300030
+      ship-sprite-harlock_51: 21300102
+      ship-sprite-harlock_53: 21300106
+      ship-sprite-harlock_49: 21300098
+      ship-sprite-harlock_33: 21300066
+      ship-sprite-harlock_8: 21300016
+      ship-sprite-harlock_55: 21300110
+      ship-sprite-harlock_6: 21300012
+      ship-sprite-harlock_48: 21300096
+      ship-sprite-harlock_54: 21300108
+      ship-sprite-harlock_46: 21300092
   spritePackingTag: 
   pSDRemoveMatte: 0
-  pSDShowRemoveMatteOption: 0
   userData: 
   assetBundleName: 
   assetBundleVariant: 
